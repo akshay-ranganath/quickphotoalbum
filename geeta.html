@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>गीता श्लोका:</title>
+
+    <link type="text/css" rel="stylesheet" href="css/lightgallery.css" />
+    <script src="js/lightgallery.js"></script>
+    <script src="js/lg-autoplay.js"></script>
+    <script src="js/lg-fullscreen.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            box-sizing: border-box;
+            background: #eeeef1; 
+        }
+
+        h1{
+            font-family: 'Poppins', serif;
+            font-weight: 700;
+            font-size:  3.15rem;
+        }
+
+        h2{
+            font-family: sans-serif;
+            font-weight: 300;
+            font-size: 1.77rem ;
+        }
+
+        .albumcontents {
+            background: #eeeef1;
+        }
+
+        img {
+            border-radius: 5%;
+            margin: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="albumheader">
+        <h1 id="albumtitle">गीता श्लोका:</h1>
+        <h2 id="albumdescription">सम्स्कुतभारत्यां प्रकाशित गीताया: श्लोका: |</h2>
+    </div>
+
+    <div id="albumcontents">
+    </div>
+
+
+    <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const album_name = 'गीता'
+        // *** Change cloud_name to be the name of your Cloudinary account
+        const cloud_name = 'dbmataac4'; 
+        
+        // language preference is for multi-lingual alt tags
+        const lang_preference = urlParams.get('lang');
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            if ((album_name) && (cloud_name)) {
+                loadPageDetails();
+                loadImages();
+            };
+
+        });
+
+
+        function loadPageDetails() {
+            var album_details_url = "https://res.cloudinary.com/" + cloud_name + "/raw/upload/गीता-album-details.json";
+
+            const title_object = document.getElementById('albumtitle');
+            const description_object = document.getElementById('albumdescription');
+
+            fetch(album_details_url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    let pageDetails = data;
+                    title_object.innerHTML = pageDetails.title;
+                    description_object.innerHTML = pageDetails.description;
+                })
+                .catch(function () {
+                    // todo : catch errors
+                });
+        }
+
+
+
+        function loadImages() {
+            // form the full Cloudinary /list request 
+            // note: /list needs to be approved on the account
+            var album_contents_url = "https://res.cloudinary.com/" + cloud_name + "/image/list/" + album_name + ".json";
+            const contents_object = document.getElementById('albumcontents');
+
+            fetch(album_contents_url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+
+                    // create the DOM node that will contain the gallery
+                    imageDiv = document.createElement("div");
+                    imageDiv.id = "lightgallery";
+                    contents_object.appendChild(imageDiv);
+
+                    let imagelist = data.resources;
+                    return imagelist.map(function (imageitem) {
+
+                        lightgalleryAnchor = document.createElement("a");
+                        lightgalleryAnchor.href = "https://res.cloudinary.com/" + cloud_name + "/image/upload/q_auto,f_auto/e_improve/" + imageitem.public_id + "." + imageitem.format; 
+
+
+                        // create an image element for each item from the /list results 
+                        img = document.createElement("img");
+                        img.class = "imageitem";
+                        // initially, just a basic 300 x 300 image 
+                        img.src = "https://res.cloudinary.com/" + cloud_name + "/image/upload/q_auto,f_auto/w_300,h_300,c_fill,g_auto/e_unsharp_mask/" + imageitem.public_id + "." + imageitem.format;
+
+
+                        // driving alt tags via asset context metadata in Cloudinary
+                        // get the language preference from the querystring
+                        if (lang_preference) {
+                            altref = "alt_" + lang_preference;
+                            // todo: consider having an array of valid language codes to check agaisnt
+                        } else {
+                            //if no preference default to english
+                            altref = "alt_EN"
+                        }
+
+                        // reference the language specific context metadata
+                        // expects CTX metadata with key 'alt_EN' or other ISO code
+                        if (imageitem.context) {
+                            console.log(JSON.stringify(imageitem));
+                            img.alt = imageitem.context.custom[altref];
+                            img.title = imageitem.context.custom[altref];
+                            // using title to make visible on mouseover
+                        };
+
+
+                        // link the lightgallery anchor to the img
+                        lightgalleryAnchor.appendChild(img);
+                        
+                        // append to the album container
+                        imageDiv.appendChild(lightgalleryAnchor);
+
+                        // trigger the lightgallery
+                        lightGallery(document.getElementById("lightgallery"),
+                        {
+                            animateThumb: true,
+                            download: false}
+                        ); 
+                    })
+                    
+                    
+                })
+                .catch(function () {
+                    // todo : catch errors
+                });
+
+        };
+
+    </script>
+</body>
+</html>
