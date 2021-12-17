@@ -15,7 +15,7 @@ Live example : [https://quickphotoalbum.vercel.app/](https://quickphotoalbum.ver
 9) Also including multi-lingual alt-tags
 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fbseymour%2Fquickphotoalbum) <a href="https://app.netlify.com/start/deploy?repository=https://github.com/bseymour/quickphotoalbum">
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fbseymour%2Fquickphotoalbum) <a href="https://app.netlify.com/start/deploy?repository=https://github.com/akshay-ranganath/quickphotoalbum">
     <img src="https://www.netlify.com/img/deploy/button.svg" title="Deploy to Netlify">
   </a>
 
