@@ -19,12 +19,14 @@
         body {
             box-sizing: border-box;
             background: #eeeef1; 
+            background-image: url('https://cdn.pixabay.com/photo/2019/04/10/11/56/watercolour-4116932_1280.png');
         }
 
         h1{
             font-family: 'Poppins', serif;
             font-weight: 700;
             font-size:  3.15rem;
+            text-align: center;
         }
 
         h2{
@@ -41,18 +43,33 @@
             border-radius: 5%;
             margin: 1px;
         }
+
+        p {            
+            font-family: sans-serif;
+            font-weight: 150;
+            font-size: 1.2rem;            
+        }
+        .footer {
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="albumheader">
         <h1 id="albumtitle">गीता श्लोका:</h1>
-        <h2 id="albumdescription">सम्स्कुतभारत्यां प्रकाशित गीताया: श्लोका: |</h2>
+        <hr />
+        <h2 id="albumdescription">संस्कुतभारत्या: कर्यकर्ता: अनेका: श्लोका: प्रकाशितवन्त:। अहं तान् श्लोकान् एकत्र क्रुत्वा album रूपेण प्रकाशयामि |</h2>
+        <p>All the copyrights and art-work belongs to <a href="https://www.samskritabharati.in/">संस्कुतभारती</a> (Sanskrutabharati). Please make sure to attribute the source. For more, please follow संस्कुतभारती on Twitter <a href="https://twitter.com/sb_bharatiya">@sb_bharatiya</a>.</p>
     </div>
 
     <div id="albumcontents">
     </div>
 
+    <div class="footer">
+        <hr />
+        <p>Website created and maintained by <a href="https://twitter.com/rakshay">@rakshay</a>.</p>
+    </div>
 
     <script>
 
@@ -65,31 +82,11 @@
         const lang_preference = urlParams.get('lang');
 
         window.addEventListener('DOMContentLoaded', (event) => {
-            if ((album_name) && (cloud_name)) {
-                loadPageDetails();
+            if ((album_name) && (cloud_name)) {                
                 loadImages();
             };
 
-        });
-
-
-        function loadPageDetails() {
-            var album_details_url = "https://res.cloudinary.com/" + cloud_name + "/raw/upload/गीता-album-details.json";
-
-            const title_object = document.getElementById('albumtitle');
-            const description_object = document.getElementById('albumdescription');
-
-            fetch(album_details_url)
-                .then((resp) => resp.json())
-                .then(function (data) {
-                    let pageDetails = data;
-                    title_object.innerHTML = pageDetails.title;
-                    description_object.innerHTML = pageDetails.description;
-                })
-                .catch(function () {
-                    // todo : catch errors
-                });
-        }
+        });        
 
 
 
@@ -120,6 +117,7 @@
                         img.class = "imageitem";
                         // initially, just a basic 300 x 300 image 
                         img.src = "https://res.cloudinary.com/" + cloud_name + "/image/upload/q_auto,f_auto/w_300,h_300,c_fill,g_auto/e_unsharp_mask/" + imageitem.public_id + "." + imageitem.format;
+                        img.loading = 'lazy'; //enforce lazy loading of the images
 
 
                         // driving alt tags via asset context metadata in Cloudinary
